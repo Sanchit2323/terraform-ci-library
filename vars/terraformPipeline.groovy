@@ -17,42 +17,42 @@ def call(Map params) {
             stage('Terraform Init') {
                 steps {
                     script {
-                        org.p9.TerraformInit.call()
+                        org.p9.TerraformInit.call(this)
                     }
                 }
             }
             stage('Terraform Format') {
                 steps {
                     script {
-                        org.p9.TerraformFormat.call()
+                        org.p9.TerraformFormat.call(this)
                     }
                 }
             }
             stage('Terraform Validate') {
                 steps {
                     script {
-                        org.p9.TerraformValidate.call()
+                        org.p9.TerraformValidate.call(this)
                     }
                 }
             }
             stage('Terraform Lint') {
                 steps {
                     script {
-                        org.p9.TerraformLint.call(env.TFLINT_PATH)
+                        org.p9.TerraformLint.call(this, env.TFLINT_PATH)
                     }
                 }
             }
             stage('Checkov Scan') {
                 steps {
                     script {
-                        org.p9.CheckovScan.call(env.CHECKOV_PATH)
+                        org.p9.CheckovScan.call(this, env.CHECKOV_PATH)
                     }
                 }
             }
             stage('Archive Reports') {
                 steps {
                     script {
-                        org.p9.ArchiveReports.call()
+                        org.p9.ArchiveReports.call(this)
                     }
                 }
             }
