@@ -1,10 +1,12 @@
 package org.p9
 
-def call() {
-    stage('Archive Reports') {
-        steps {
-            echo 'Archiving Reports'
-            archiveArtifacts artifacts: 'terraform_fmt_report.txt, terraform_validate_report.txt, checkov_report.json, tflint_report.json', allowEmptyArchive: true
+class ArchiveReports {
+    static void call(steps) {
+        steps.stage('Archive Reports') {
+            steps.steps {
+                steps.archiveArtifacts artifacts: '**/terraform.tfstate', allowEmptyArchive: true
+                steps.archiveArtifacts artifacts: '**/tfplan', allowEmptyArchive: true
+            }
         }
     }
 }
