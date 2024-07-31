@@ -1,59 +1,45 @@
-def call(Map params) {
+def call(String repoUrl = 'https://github.com/Sanchit2323/Terraform-CI.git') {
     pipeline {
         agent any
         environment {
             CHECKOV_PATH = '/var/lib/jenkins/.local/bin'
-            TFLINT_PATH = '/usr/local/bin/tflint' // Adjust the path if tflint is installed elsewhere
-        }
-        parameters {
-            string(name: 'REPO_URL', defaultValue: 'https://github.com/Sanchit2323/Terraform-CI.git', description: 'GitHub repository URL')
+            TFLINT_PATH = '/usr/local/bin/tflint'
         }
         stages {
             stage('Checkout') {
                 steps {
-                    git url: "${params.REPO_URL}", branch: 'main'
+                    git url: "${repoUrl}", branch: 'main'
                 }
             }
             stage('Terraform Init') {
                 steps {
-                    script {
-                        org.p9.TerraformInit.call(this)
-                    }
+                    org.p9.TerraformUtils.terraformInit()
                 }
             }
             stage('Terraform Format') {
                 steps {
-                    script {
-                        org.p9.TerraformFormat.call(this)
-                    }
+                    org.p9.TerraformUtils.terraformFormat()
                 }
             }
             stage('Terraform Validate') {
                 steps {
-                    script {
-                        org.p9.TerraformValidate.call(this)
-                    }
+                    org.p9.TerraformUtils.terraformValidate()
                 }
             }
             stage('Terraform Lint') {
                 steps {
-                    script {
-                        org.p9.TerraformLint.call(this, env.TFLINT_PATH)
-                    }
+                    org.p9.TflintUtils.runTflint()
                 }
             }
             stage('Checkov Scan') {
                 steps {
-                    script {
-                        org.p9.CheckovScan.call(this, env.CHECKOV_PATH)
-                    }
+                    org.p9.CheckovUtils.runCheckov()
                 }
             }
             stage('Archive Reports') {
                 steps {
-                    script {
-                        org.p9.ArchiveReports.call(this)
-                    }
+                    echo 'Archiving Reports'
+                    archiveArtifacts artifacts: 'terraform_fmt_report.txt, terraform_validate_report.txt, checkov_report.json, tflint_report.json', allowEmptyArchive: true
                 }
             }
         }
