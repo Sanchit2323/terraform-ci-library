@@ -13,27 +13,37 @@ def call(String repoUrl = 'https://github.com/Sanchit2323/Terraform-CI.git') {
             }
             stage('Terraform Init') {
                 steps {
-                    org.p9.TerraformUtils.terraformInit()
+                    script {
+                        org.p9.TerraformUtils.terraformInit()
+                    }
                 }
             }
             stage('Terraform Format') {
                 steps {
-                    org.p9.TerraformUtils.terraformFormat()
+                    script {
+                        org.p9.TerraformUtils.terraformFormat()
+                    }
                 }
             }
             stage('Terraform Validate') {
                 steps {
-                    org.p9.TerraformUtils.terraformValidate()
+                    script {
+                        org.p9.TerraformUtils.terraformValidate()
+                    }
                 }
             }
             stage('Terraform Lint') {
                 steps {
-                    org.p9.TflintUtils.runTflint()
+                    script {
+                        org.p9.TflintUtils.runTflint()
+                    }
                 }
             }
             stage('Checkov Scan') {
                 steps {
-                    org.p9.CheckovUtils.runCheckov()
+                    script {
+                        org.p9.CheckovUtils.runCheckov()
+                    }
                 }
             }
             stage('Archive Reports') {
