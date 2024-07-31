@@ -1,4 +1,4 @@
-package org.example
+package org.p9
 
 def call() {
     stage('Terraform Init') {
