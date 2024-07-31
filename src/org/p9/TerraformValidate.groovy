@@ -1,10 +1,10 @@
 package org.p9
 
-def call() {
-    stage('Terraform Validate') {
-        steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                sh 'terraform validate > terraform_validate_report.txt'
+class TerraformValidate {
+    static void call(steps) {
+        steps.stage('Terraform Validate') {
+            steps.steps {
+                steps.sh 'terraform validate'
             }
         }
     }
