@@ -1,13 +1,16 @@
 package org.p9
 
-def call(String tflintPath) {
-    stage('Terraform Lint') {
-        steps {
-            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                sh """
-                    ${tflintPath} --format json > tflint_report.json
-                """
+class TerraformLint {
+    static void call(steps, tflintPath) {
+        steps.stage('Terraform Lint') {
+            steps.steps {
+                steps.sh "${tflintPath} --init"
+                steps.sh "${tflintPath} --enable-rule=terraform"
+                steps.sh "${tflintPath} --enable-rule=terraform--terraform-0_12"
+                steps.sh "${tflintPath} --enable-rule=terraform--terraform-0_13"
+                steps.sh "${tflintPath} --enable-rule=terraform--terraform-0_14"
             }
         }
     }
 }
+
