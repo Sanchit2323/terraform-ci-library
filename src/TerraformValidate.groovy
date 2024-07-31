@@ -1,11 +1,9 @@
 package src
 
 class TerraformValidate {
-    static void validate() {
-        stage('Terraform Validate') {
-            catchError {
-                sh 'terraform validate'
-            }
-        }
+    static void validate(String message) {
+        echo "Validating Terraform: ${message}"
+        sh 'terraform validate' // Example command
     }
 }
+
