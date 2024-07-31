@@ -14,13 +14,47 @@ def call(Map params) {
                     git url: "${params.REPO_URL}", branch: 'main'
                 }
             }
-            script {
-                org.example.TerraformInit.call()
-                org.example.TerraformFormat.call()
-                org.example.TerraformValidate.call()
-                org.example.TerraformLint.call(env.TFLINT_PATH)
-                org.example.CheckovScan.call(env.CHECKOV_PATH)
-                org.example.ArchiveReports.call()
+            stage('Terraform Init') {
+                steps {
+                    script {
+                        org.p9.TerraformInit.call()
+                    }
+                }
+            }
+            stage('Terraform Format') {
+                steps {
+                    script {
+                        org.p9.TerraformFormat.call()
+                    }
+                }
+            }
+            stage('Terraform Validate') {
+                steps {
+                    script {
+                        org.p9.TerraformValidate.call()
+                    }
+                }
+            }
+            stage('Terraform Lint') {
+                steps {
+                    script {
+                        org.p9.TerraformLint.call(env.TFLINT_PATH)
+                    }
+                }
+            }
+            stage('Checkov Scan') {
+                steps {
+                    script {
+                        org.p9.CheckovScan.call(env.CHECKOV_PATH)
+                    }
+                }
+            }
+            stage('Archive Reports') {
+                steps {
+                    script {
+                        org.p9.ArchiveReports.call()
+                    }
+                }
             }
         }
         post {
