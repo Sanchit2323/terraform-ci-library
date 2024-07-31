@@ -1,45 +1,21 @@
-def call() {
-    pipeline {
-        agent any
-
-        stages {
-            stage('Checkout') {
-                steps {
-                    git 'https://github.com/Sanchit2323/Terraform-CI.git'
-                }
-            }
-            stage('Terraform Init') {
-                steps {
-                    src.TerraformInit.init()
-                }
-            }
-            stage('Terraform Format') {
-                steps {
-                    src.TerraformFmt.format()
-                }
-            }
-            stage('Terraform Validate') {
-                steps {
-                    src.TerraformValidate.validate()
-                }
-            }
-            stage('Checkov Scan') {
-                steps {
-                    src.TerraformCheckov.scan()
-                }
-            }
-            stage('Archive Reports') {
-                steps {
-                    echo 'Archiving Reports'
-                    archiveArtifacts artifacts: '**/checkov_report.json, **/terraform_fmt_report.txt, **/terraform_validate_report.txt'
-                }
-            }
-        }
-        
-        post {
-            always {
-                cleanWs()
-            }
-        }
+def call(String stage) {
+    switch(stage) {
+        case 'init':
+            src.TerraformInit.init("Running Terraform Init")
+            break
+        case 'validate':
+            src.TerraformValidate.validate("Running Terraform Validate")
+            break
+        case 'checkov':
+            src.TerraformCheckov.scan("Running Checkov Scan")
+            break
+        case 'fmt':
+            src.TerraformFmt.format("Running Terraform Format Check")
+            break
+        case 'lint':
+            src.TerraformLint.lint("Running Terraform Lint")
+            break
+        default:
+            error("Unknown stage: ${stage}")
     }
 }
