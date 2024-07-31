@@ -1,11 +1,8 @@
 package src
 
 class TerraformInit {
-    static void init() {
-        stage('Terraform Init') {
-            catchError {
-                sh 'terraform init'
-            }
-        }
+    static void init(String message) {
+        echo "Initializing Terraform: ${message}"
+        sh 'terraform init' // Example command
     }
 }
