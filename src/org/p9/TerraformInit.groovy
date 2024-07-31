@@ -1,13 +1,14 @@
 package org.p9
 
 class TerraformInit {
-    static void call() {
-        stage('Terraform Init') {
-            steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    sh 'terraform init'
+    static void call(steps) {
+        steps.stage('Terraform Init') {
+            steps.steps {
+                steps.catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    steps.sh 'terraform init'
                 }
             }
         }
     }
 }
+
