@@ -28,3 +28,29 @@ jobs:
         if: steps.check_branch.outputs.notify == 'true'
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text":"A new tag has been created from a branch other than master: '${{ github.ref }}'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Email Notification
+        if: steps.check_branch.outputs.notify == 'true'
+        run: |
+          npm install nodemailer
+          echo "const nodemailer = require('nodemailer');" > sendEmail.js
+          echo "const transporter = nodemailer.createTransport({" >> sendEmail.js
+          echo "  service: 'gmail'," >> sendEmail.js
+          echo "  auth: {" >> sendEmail.js
+          echo "    user: process.env.GMAIL_USER," >> sendEmail.js
+          echo "    pass: process.env.GMAIL_PASS" >> sendEmail.js
+          echo "  }" >> sendEmail.js
+          echo "});" >> sendEmail.js
+          echo "const mailOptions = {" >> sendEmail.js
+          echo "  from: process.env.GMAIL_USER," >> sendEmail.js
+          echo "  to: 'recipient-email@example.com'," >> sendEmail.js
+          echo "  subject: 'New Tag Created'," >> sendEmail.js
+          echo "  text: 'A new tag has been created from a branch other than master: ${GITHUB_REF}'" >> sendEmail.js
+          echo "};" >> sendEmail.js
+          echo "transporter.sendMail(mailOptions, (error, info) => {" >> sendEmail.js
+          echo "  if (error) {" >> sendEmail.js
+          echo "    return console.log(error);" >> sendEmail.js
+          echo "  }" >> sendEmail.js
+          echo "  console.log('Email sent: ' + info.response);" >> sendEmail.js
+          echo "});" >> sendEmail.js
+          node sendEmail.js
